@@ -16,4 +16,9 @@
            name="GCam_sweet2"
            remote="rony1duet"
            revision="main" />
+
+  <project path="vendor/android_prebuilts_sweet2"
+           name="android_prebuilts_sweet2"
+           remote="rony1duet"
+           revision="main" />
 </manifest>

@@ -129,41 +129,38 @@ Create `.repo/local_manifests/gcam_sweet2.xml`:
            name="GCam_sweet2"
            remote="rony1duet"
            revision="main" />
+
+  <project path="vendor/android_prebuilts_sweet2"
+           name="android_prebuilts_sweet2"
+           remote="rony1duet"
+           revision="main" />
 </manifest>
 ```
 
 Then sync:
 ```bash
-repo sync vendor/GCam_sweet2
+repo sync vendor/GCam_sweet2 vendor/android_prebuilts_sweet2
 ```
 
 ### Fetch the GCam prebuilt before building
 
 The proprietary APK and its extracted native libraries are deliberately excluded
-from Git. Fetch the pinned, verified prebuilt after `repo sync` and before
+from Git. `android_prebuilts_sweet2` is the single source of truth for the
+pinned version, source URL, and SHA-256. Fetch it after `repo sync` and before
 starting the PixelOS build:
 
 ```bash
-bash vendor/GCam_sweet2/tools/fetch_gcam_prebuilt.sh
+bash vendor/android_prebuilts_sweet2/gcam/fetch_gcam_prebuilt.sh \
+  vendor/GCam_sweet2/system/product/app/GoogleCameraEng
 source build/envsetup.sh
 lunch aosp_sweet2-userdebug
 m bacon
 ```
 
-The script downloads **MGC_9.6.080_V52_ENG.apk**, verifies its SHA-256, tests
-the APK archive, and extracts its arm64 libraries into the source tree. It is
-safe to run repeatedly and will not download again when the expected APK is
-already present.
-
-To use a trusted mirror or a GitHub Release asset without editing the script:
-
-```bash
-GCAM_APK_URL="https://example.com/MGC_9.6.080_V52_ENG.apk" \
-bash vendor/GCam_sweet2/tools/fetch_gcam_prebuilt.sh
-```
-
-The hash check remains enabled. If you intentionally change the APK version,
-update the version, URL, SHA-256, and build definitions together in one commit.
+The shared script verifies the APK SHA-256, tests the APK archive, and extracts
+its arm64 libraries into the GCam source tree. It is safe to run repeatedly.
+To update GCam, change the pin only in `android_prebuilts_sweet2` and validate
+the resulting AOSP build before updating this repository's module metadata.
 
 ---
 

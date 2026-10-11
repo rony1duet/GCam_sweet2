@@ -1,5 +1,5 @@
 # Git ignore for GCam_sweet2
-# Proprietary GCam prebuilts are fetched locally by tools/fetch_gcam_prebuilt.sh.
+# Proprietary GCam prebuilts are fetched by android_prebuilts_sweet2.
 # Never commit these generated files.
 *.apk
 *.so
