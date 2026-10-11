@@ -293,28 +293,6 @@
     <string name="LumaDenoiseBE_fmov_bf80_0000_pthcr_key_2">-1.0</string>
     <string name="LumaDenoiseBE_fmov_bf80_0000_pthcr_key_6">-1.0</string>
     <string name="pref_video_fps_4k_key">FPS_30</string>
-    <string name="pref_camera_video_8k_enabled">0</string>
-    <string name="pref_camera_video_8k_option_available">0</string>
-    <string name="pref_camera_video_4k60_enabled">0</string>
-    <string name="pref_camera_video_4k60_option_available">0</string>
-    <string name="ses_8k_id_key_0"></string>
-    <string name="ses_8k_id_key_1"></string>
-    <string name="ses_8k_id_key_2"></string>
-    <string name="ses_8k_id_key_3"></string>
-    <string name="ses_8k_id_key_4"></string>
-    <string name="ses_8k_id_key_5"></string>
-    <string name="ses_8k_id_key_6"></string>
-    <string name="ses_4k60fps_id_key_0"></string>
-    <string name="ses_4k60fps_id_key_1"></string>
-    <string name="ses_4k60fps_id_key_2"></string>
-    <string name="ses_4k60fps_id_key_3"></string>
-    <string name="ses_4k60fps_id_key_4"></string>
-    <string name="ses_4k60fps_id_key_5"></string>
-    <string name="ses_4k60fps_id_key_6"></string>
-    <string name="pref_video_resolution">RES_4K</string>
-    <string name="pref_camera_max_video_resolution">3840x2160</string>
-    <string name="pref_video_fps_4k_60_key">0</string>
-    <string name="pref_video_fps_4k_120_key">0</string>
     <string name="LumaDenoiseBE_fmov_bf80_0000_pthcr_key_5">-1.0</string>
     <string name="hwlevel_key">0</string>
     <string name="ses_p_id_pt_key_2"></string>
@@ -879,5 +857,6 @@
     <string name="pref_unfold_preference">0</string>
     <int name="tooltip_impression_count_for_focus_feature_bottom_sheet_edu" value="1" />
     <string name="lens_wl_key"></string>
+    <string name="pref_video_resolution">RES_1080P</string>
     <string name="pref_camera_advice_settings">1</string>
 </map>
