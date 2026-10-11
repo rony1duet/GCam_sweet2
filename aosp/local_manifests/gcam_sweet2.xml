@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  .repo/local_manifests/gcam_sweet2.xml
+  PixelOS local manifest — clones GCam_sweet2 into vendor/GCam_sweet2
+
+  Usage:
+    1. Copy this file to <ROM_source>/.repo/local_manifests/gcam_sweet2.xml
+    2. Run: repo sync vendor/GCam_sweet2
+-->
+<manifest>
+  <remote name="rony1duet"
+          fetch="https://github.com/rony1duet/"
+          revision="main" />
+
+  <project path="vendor/GCam_sweet2"
+           name="GCam_sweet2"
+           remote="rony1duet"
+           revision="main" />
+</manifest>
