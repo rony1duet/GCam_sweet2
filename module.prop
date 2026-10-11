@@ -1,6 +1,6 @@
 id=gcam_system
 name=Google Camera (MGC) System App
-version=9.6.080_V51
+version=9.6.080_V52
 versionCode=96080
 author=BSG / MGC (rony1duet)
-description=Systemlessly installs Google Camera (MGC 9.6.080_V51) with 64-bit native libraries and Sweet2 (Redmi Note 12 Pro) tuning, replacing stock Aperture camera.
+description=Systemlessly installs Google Camera (MGC 9.6.080_V52) with 64-bit native libraries and Sweet2 (Redmi Note 12 Pro) tuning, replacing stock Aperture camera.

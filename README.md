@@ -13,7 +13,7 @@
 | **Codename** | sweet2 |
 | **SoC** | Snapdragon 778G |
 | **Max Video** | **4K @ 30fps** |
-| **GCam Version** | MGC 9.6.080_V51 |
+| **GCam Version** | MGC 9.6.080_V52 |
 | **Target ROM** | PixelOS (AOSP) |
 
 ---
@@ -150,7 +150,7 @@ lunch aosp_sweet2-userdebug
 m bacon
 ```
 
-The script downloads **MGC_9.6.080_V51_ENG.apk**, verifies its SHA-256, tests
+The script downloads **MGC_9.6.080_V52_ENG.apk**, verifies its SHA-256, tests
 the APK archive, and extracts its arm64 libraries into the source tree. It is
 safe to run repeatedly and will not download again when the expected APK is
 already present.
@@ -158,7 +158,7 @@ already present.
 To use a trusted mirror or a GitHub Release asset without editing the script:
 
 ```bash
-GCAM_APK_URL="https://example.com/MGC_9.6.080_V51_ENG.apk" \
+GCAM_APK_URL="https://example.com/MGC_9.6.080_V52_ENG.apk" \
 bash vendor/GCam_sweet2/tools/fetch_gcam_prebuilt.sh
 ```
 

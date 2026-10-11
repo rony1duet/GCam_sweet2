@@ -5,13 +5,13 @@ set -euo pipefail
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-readonly APK_NAME="MGC_9.6.080_V51_ENG.apk"
+readonly APK_NAME="MGC_9.6.080_V52_ENG.apk"
 readonly APK_DEST="${REPO_DIR}/system/product/app/GoogleCameraEng/GoogleCameraEng.apk"
 readonly LIB_DEST="${REPO_DIR}/system/product/app/GoogleCameraEng/lib/arm64"
 
 # Override GCAM_APK_URL only to use a trusted mirror or your own release asset.
-readonly GCAM_APK_URL="${GCAM_APK_URL:-https://1-dontsharethislink.celsoazevedo.com/file/filesc/MGC_9.6.080_V51_ENG.apk}"
-readonly GCAM_APK_SHA256="${GCAM_APK_SHA256:-17c733cb9bb38a9ddbe10588346635bd6a1195274e07a095e422da885bf6b382}"
+readonly GCAM_APK_URL="${GCAM_APK_URL:-https://1-dontsharethislink.celsoazevedo.com/file/filesc/MGC_9.6.080_V52_ENG.apk}"
+readonly GCAM_APK_SHA256="${GCAM_APK_SHA256:-e13b884963a0f5a904f99358d120e3b96774f560c2403a7114812af3f7dd371c}"
 
 require_command() {
   command -v "$1" >/dev/null 2>&1 || {
