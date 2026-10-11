@@ -137,6 +137,34 @@ Then sync:
 repo sync vendor/GCam_sweet2
 ```
 
+### Fetch the GCam prebuilt before building
+
+The proprietary APK and its extracted native libraries are deliberately excluded
+from Git. Fetch the pinned, verified prebuilt after `repo sync` and before
+starting the PixelOS build:
+
+```bash
+bash vendor/GCam_sweet2/tools/fetch_gcam_prebuilt.sh
+source build/envsetup.sh
+lunch aosp_sweet2-userdebug
+m bacon
+```
+
+The script downloads **MGC_9.6.080_V51_ENG.apk**, verifies its SHA-256, tests
+the APK archive, and extracts its arm64 libraries into the source tree. It is
+safe to run repeatedly and will not download again when the expected APK is
+already present.
+
+To use a trusted mirror or a GitHub Release asset without editing the script:
+
+```bash
+GCAM_APK_URL="https://example.com/MGC_9.6.080_V51_ENG.apk" \
+bash vendor/GCam_sweet2/tools/fetch_gcam_prebuilt.sh
+```
+
+The hash check remains enabled. If you intentionally change the APK version,
+update the version, URL, SHA-256, and build definitions together in one commit.
+
 ---
 
 ## 📦 Magisk / KernelSU Install

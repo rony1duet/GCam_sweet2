@@ -1,5 +1,6 @@
 # Git ignore for GCam_sweet2
-# Large binaries are excluded - host them via GitHub Releases
+# Proprietary GCam prebuilts are fetched locally by tools/fetch_gcam_prebuilt.sh.
+# Never commit these generated files.
 *.apk
 *.so
 
