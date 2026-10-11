@@ -1,6 +1,7 @@
 # Git ignore for GCam_sweet2
-# NOTE: The APK and .so files are large binaries — they ARE tracked by git
-# but you can use Git LFS for them (recommended for GitHub)
+# Large binaries are excluded - host them via GitHub Releases
+*.apk
+*.so
 
 # OS files
 .DS_Store
@@ -21,7 +22,3 @@ out/
 # Temp
 *.tmp
 *.bak
-
-# Git LFS tracking note:
-# Run: git lfs track "*.apk" "*.so"
-# Then: git add .gitattributes
