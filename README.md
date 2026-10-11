@@ -1,0 +1,163 @@
+# GCam_sweet2 — Google Camera System Module
+
+> **Google Camera (MGC 9.6.080) tuned for Redmi Note 12 Pro (sweet2 / Snapdragon 778G)**  
+> Maintained by [rony1duet](https://github.com/rony1duet)
+
+---
+
+## 📋 Device Info
+
+| Key | Value |
+|-----|-------|
+| **Device** | Redmi Note 12 Pro 4G |
+| **Codename** | sweet2 |
+| **SoC** | Snapdragon 778G |
+| **Max Video** | **4K @ 30fps** |
+| **GCam Version** | MGC 9.6.080_V51 |
+| **Target ROM** | PixelOS (AOSP) |
+
+---
+
+## 🎯 Features
+
+- ✅ Google Camera (MGC) installed as a **system app** (replaces stock Aperture)
+- ✅ Sweet2-tuned `GCam_Config_sweet2.xml` with correct AWB, sharpness, noise reduction, HDR+
+- ✅ **Video caps fixed** — only shows supported modes (max **4K@30fps**), **8K and 4K@60fps hidden**
+- ✅ 64-bit native libraries bundled (`arm64`)
+- ✅ Aperture camera suppressed/replaced
+- ✅ All runtime permissions auto-granted on boot
+- ✅ Config auto-imported into GCam preferences on install
+
+---
+
+## 📹 Video Capability Fix (Key Change)
+
+The Snapdragon 778G supports a maximum of **4K @ 30fps**. Previous configs incorrectly exposed 8K and 4K@60fps options in the GCam video menu.
+
+**Fixed in `common/GCam_Config_sweet2.xml`:**
+```xml
+<!-- Disable 8K video option -->
+<string name="pref_camera_video_8k_enabled">0</string>
+<string name="pref_camera_video_8k_option_available">0</string>
+
+<!-- Disable 4K@60fps (not supported) -->
+<string name="pref_camera_video_4k60_enabled">0</string>
+<string name="pref_camera_video_4k60_option_available">0</string>
+
+<!-- Set max video resolution to 4K -->
+<string name="pref_video_resolution">RES_4K</string>
+<string name="pref_video_fps_4k_key">FPS_30</string>
+<string name="pref_camera_max_video_resolution">3840x2160</string>
+```
+
+---
+
+## 🏗️ Repository Structure
+
+```
+GCam_sweet2/
+├── Android.mk                      <- AOSP build integration
+├── Android.bp                      <- Blueprint build file
+├── README.md
+├── module.prop                     <- Magisk/KernelSU module metadata
+├── customize.sh                    <- Magisk install script
+├── service.sh                      <- Post-boot service script
+├── common/
+│   └── GCam_Config_sweet2.xml      <- Tuned GCam preferences
+├── system/
+│   └── product/
+│       └── app/
+│           ├── GoogleCameraEng/
+│           │   ├── GoogleCameraEng.apk
+│           │   └── lib/arm64/      <- 64-bit native .so files
+│           ├── Aperture/
+│           │   └── .replace        <- Replaces stock Aperture
+│           └── ApertureLensLauncher/
+│               └── .replace
+└── META-INF/
+    └── com/google/android/
+        ├── update-binary
+        └── updater-script
+```
+
+---
+
+## 🔧 AOSP / PixelOS Build Integration
+
+### Method 1 — `PRODUCT_PACKAGES` in device tree
+
+Add to your device tree's `device.mk` (or `device_sweet2.mk`):
+
+```makefile
+# Google Camera (MGC) as system app
+PRODUCT_PACKAGES += \
+    GoogleCameraEng
+
+# Copy GCam config to /product/etc/gcam/
+PRODUCT_COPY_FILES += \
+    vendor/GCam_sweet2/common/GCam_Config_sweet2.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/gcam/GCam_Config_sweet2.xml
+```
+
+And include the module's `Android.mk`:
+```makefile
+$(call inherit-product, vendor/GCam_sweet2/Android.mk)
+```
+
+### Method 2 — Direct vendor include
+
+In your `vendorsetup.sh` or ROM's `vendor/` directory, clone this repo:
+```bash
+git clone https://github.com/rony1duet/GCam_sweet2 vendor/GCam_sweet2
+```
+
+Then in your top-level `Makefile` or device's `BoardConfig.mk`:
+```makefile
+include vendor/GCam_sweet2/Android.mk
+```
+
+### Method 3 — `.repo/local_manifests/` (recommended for PixelOS)
+
+Create `.repo/local_manifests/gcam_sweet2.xml`:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="rony1duet"
+          fetch="https://github.com/rony1duet/"
+          revision="main" />
+
+  <project path="vendor/GCam_sweet2"
+           name="GCam_sweet2"
+           remote="rony1duet"
+           revision="main" />
+</manifest>
+```
+
+Then sync:
+```bash
+repo sync vendor/GCam_sweet2
+```
+
+---
+
+## 📦 Magisk / KernelSU Install
+
+1. Download the module ZIP from [Releases](https://github.com/rony1duet/GCam_sweet2/releases)
+2. Flash via Magisk / KernelSU / APatch
+3. Reboot
+4. Open Google Camera — config is auto-applied
+
+---
+
+## 🔌 ADB Push (Manual Config Apply)
+
+With your device connected via ADB (root):
+```bash
+adb push common/GCam_Config_sweet2.xml /sdcard/GCam/Configs9/
+adb shell am force-stop com.google.android.GoogleCameraEng
+```
+
+---
+
+## 📄 License
+
+Apache 2.0 — see [LICENSE](LICENSE)
