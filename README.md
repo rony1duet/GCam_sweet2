@@ -12,7 +12,7 @@
 | **Device** | Redmi Note 12 Pro 4G |
 | **Codename** | sweet2 |
 | **SoC** | Snapdragon 778G |
-| **Max Video** | **4K @ 30fps** |
+| **Video default / maximum** | **1080p / 4K @ 30fps** |
 | **GCam Version** | MGC 9.6.080_V52 |
 | **Target ROM** | PixelOS (AOSP) |
 
@@ -22,11 +22,11 @@
 
 - ✅ Google Camera (MGC) installed as a **system app** (replaces stock Aperture)
 - ✅ Sweet2-tuned `GCam_Config_sweet2.xml` with correct AWB, sharpness, noise reduction, HDR+
-- ✅ **Video caps fixed** — only shows supported modes (max **4K@30fps**), **8K and 4K@60fps hidden**
+- ✅ **Video caps fixed** — defaults to **1080p**, supports up to **4K@30fps**, and hides **8K and 4K@60fps**
 - ✅ 64-bit native libraries bundled (`arm64`)
 - ✅ Aperture camera suppressed/replaced
 - ✅ All runtime permissions auto-granted on boot
-- ✅ Config auto-imported into GCam preferences on install
+- ✅ Config bundled under `/product/etc/gcam/` for import in GCam
 
 ---
 
@@ -44,8 +44,8 @@ The Snapdragon 778G supports a maximum of **4K @ 30fps**. Previous configs incor
 <string name="pref_camera_video_4k60_enabled">0</string>
 <string name="pref_camera_video_4k60_option_available">0</string>
 
-<!-- Set max video resolution to 4K -->
-<string name="pref_video_resolution">RES_4K</string>
+<!-- Default to 1080p; 4K remains available at 30fps -->
+<string name="pref_video_resolution">RES_1080P</string>
 <string name="pref_video_fps_4k_key">FPS_30</string>
 <string name="pref_camera_max_video_resolution">3840x2160</string>
 ```
@@ -89,19 +89,19 @@ GCam_sweet2/
 Add to your device tree's `device.mk` (or `device_sweet2.mk`):
 
 ```makefile
-# Google Camera (MGC) as system app
+# Google Camera (MGC) as a product app
 PRODUCT_PACKAGES += \
     GoogleCameraEng
-
-# Copy GCam config to /product/etc/gcam/
-PRODUCT_COPY_FILES += \
-    vendor/GCam_sweet2/common/GCam_Config_sweet2.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/gcam/GCam_Config_sweet2.xml
 ```
 
-And include the module's `Android.mk`:
+Then inherit the product fragment:
 ```makefile
 $(call inherit-product, vendor/GCam_sweet2/Android.mk)
 ```
+
+`Android.bp` is the only module definition. It installs the APK plus the
+config and permission XML as required dependencies; do not add duplicate
+`PRODUCT_COPY_FILES` entries for them.
 
 ### Method 2 — Direct vendor include
 
@@ -110,9 +110,9 @@ In your `vendorsetup.sh` or ROM's `vendor/` directory, clone this repo:
 git clone https://github.com/rony1duet/GCam_sweet2 vendor/GCam_sweet2
 ```
 
-Then in your top-level `Makefile` or device's `BoardConfig.mk`:
+Then inherit the supplied device fragment from your device's `device.mk`:
 ```makefile
-include vendor/GCam_sweet2/Android.mk
+$(call inherit-product, vendor/GCam_sweet2/aosp/device_sweet2_gcam.mk)
 ```
 
 ### Method 3 — `.repo/local_manifests/` (recommended for PixelOS)
@@ -172,7 +172,7 @@ update the version, URL, SHA-256, and build definitions together in one commit.
 1. Download the module ZIP from [Releases](https://github.com/rony1duet/GCam_sweet2/releases)
 2. Flash via Magisk / KernelSU / APatch
 3. Reboot
-4. Open Google Camera — config is auto-applied
+4. Open Google Camera and import `GCam_Config_sweet2.xml` from `Configs9`
 
 ---
 
@@ -183,6 +183,10 @@ With your device connected via ADB (root):
 adb push common/GCam_Config_sweet2.xml /sdcard/GCam/Configs9/
 adb shell am force-stop com.google.android.GoogleCameraEng
 ```
+
+Open Google Camera and use its config-import flow to load the file. Copying a
+config XML directly into Android SharedPreferences is not supported: GCam
+rewrites that file when it starts.
 
 ---
 

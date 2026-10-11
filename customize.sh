@@ -13,7 +13,7 @@ set_perm_recursive $MODPATH 0 0 0755 0644
 set_perm $MODPATH/system/product/app/GoogleCameraEng/GoogleCameraEng.apk 0 0 0644
 set_perm_recursive $MODPATH/system/product/app/GoogleCameraEng/lib 0 0 0755 0644
 
-ui_print "- Importing Sweet (k6a) GCam XML Configuration..."
+ui_print "- Copying Sweet2 GCam XML configuration..."
 CONFIG_FILE="$MODPATH/common/GCam_Config_sweet2.xml"
 if [ -f "$CONFIG_FILE" ]; then
   mkdir -p /sdcard/GCam/Configs9
@@ -24,17 +24,7 @@ if [ -f "$CONFIG_FILE" ]; then
   cp "$CONFIG_FILE" /sdcard/Download/GCam_Config_sweet2.xml 2>/dev/null || true
   cp "$CONFIG_FILE" /sdcard/Download/MGC.cfg 2>/dev/null || true
 
-  # Direct preference injection if package directory exists
-  PREFS_DIR="/data/data/com.google.android.GoogleCameraEng/shared_prefs"
-  if [ -d "/data/data/com.google.android.GoogleCameraEng" ]; then
-    mkdir -p "$PREFS_DIR"
-    GCAM_UID=$(stat -c "%u" /data/data/com.google.android.GoogleCameraEng 2>/dev/null || echo "10000")
-    cp "$CONFIG_FILE" "$PREFS_DIR/com.google.android.GoogleCameraEng_preferences.xml"
-    chown -R "$GCAM_UID:$GCAM_UID" "$PREFS_DIR" 2>/dev/null || true
-    chmod 660 "$PREFS_DIR/com.google.android.GoogleCameraEng_preferences.xml" 2>/dev/null || true
-    restorecon -R /data/data/com.google.android.GoogleCameraEng 2>/dev/null || true
-    ui_print "- Configuration applied directly to camera preferences!"
-  fi
+  ui_print "- Import the config from GCam/Configs9 after reboot."
 fi
 
 # Register and install Google Camera APK in PackageManager if system is running

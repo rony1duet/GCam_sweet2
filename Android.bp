@@ -1,80 +1,21 @@
-// Android.bp for GCam_sweet2
-// Used for Soong build system (Android 10+)
-// See Android.mk for make-based builds
+// Soong build integration for PixelOS/AOSP.
+// The APK contains its own arm64 native libraries; do not declare them as
+// separate cc_prebuilt modules.
 
 android_app_import {
     name: "GoogleCameraEng",
     apk: "system/product/app/GoogleCameraEng/GoogleCameraEng.apk",
 
-    // Install to /product/app/GoogleCameraEng/
     product_specific: true,
     privileged: true,
+    presigned: true,
 
-    // Use platform certificate
-    certificate: "platform",
-
-    // Presigned — do not re-sign
-    presigned: false,
-
-    // JNI libraries (arm64)
-    jni_libs: [
-        "libandroidx.graphics.path",
-        "libannexbtoavcc",
-        "libarcore_sdk_c",
-        "libarcore_sdk_jni",
-        "libbrotli",
-        "libcyclops",
-        "libeglimage",
-        "libgcastartup",
-        "libhotshot_object_detector_jni",
-        "libimage",
-        "libl2l_video_processor_utils_jni",
-        "liblightcycle",
-        "libnative",
-        "libnative_crash_handler_jni",
-        "libnative_utils_android",
-        "liboliveoil",
-        "libpairipcore",
-        "libsaliency_predictor_jni",
-        "libsegmentation_predictor_jni",
-        "libsmartcapture_native",
-        "libspeechenhancer_jni_avenhrealtimenative",
+    required: [
+        "privapp-permissions-GoogleCameraEng",
+        "GCam_Config_sweet2",
     ],
-
-    // Enforce 64-bit ABI
-    arch: {
-        arm64: {
-            apk: "system/product/app/GoogleCameraEng/GoogleCameraEng.apk",
-        },
-    },
-
-    // Required permissions — granted at install time
-    required: ["privapp-permissions-GoogleCameraEng"],
 }
 
-// Prebuilt JNI libs (arm64)
-cc_prebuilt_library_shared {
-    name: "libgcastartup",
-    target: { android_arm64: { srcs: ["system/product/app/GoogleCameraEng/lib/arm64/libgcastartup.so"] } },
-    product_specific: true,
-    strip: { none: true },
-}
-
-cc_prebuilt_library_shared {
-    name: "libcyclops",
-    target: { android_arm64: { srcs: ["system/product/app/GoogleCameraEng/lib/arm64/libcyclops.so"] } },
-    product_specific: true,
-    strip: { none: true },
-}
-
-cc_prebuilt_library_shared {
-    name: "libsmartcapture_native",
-    target: { android_arm64: { srcs: ["system/product/app/GoogleCameraEng/lib/arm64/libsmartcapture_native.so"] } },
-    product_specific: true,
-    strip: { none: true },
-}
-
-// Prebuilt privapp permissions XML
 prebuilt_etc {
     name: "privapp-permissions-GoogleCameraEng",
     src: "privapp-permissions-GoogleCameraEng.xml",
@@ -82,7 +23,6 @@ prebuilt_etc {
     product_specific: true,
 }
 
-// Copy GCam sweet2 config
 prebuilt_etc {
     name: "GCam_Config_sweet2",
     src: "common/GCam_Config_sweet2.xml",
