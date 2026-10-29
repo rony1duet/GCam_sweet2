@@ -9,6 +9,9 @@ android_app_import {
     product_specific: true,
     privileged: true,
     presigned: true,
+    dex_preopt: {
+        enabled: false,
+    },
 
     required: [
         "privapp-permissions-GoogleCameraEng",
