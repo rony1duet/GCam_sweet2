@@ -61,7 +61,6 @@ The Qualcomm Snapdragon 732G Spectra 350 ISP hardware supports up to **4K at 30 
 ```text
 GCam_sweet2/
 ├── Android.bp                                 # Soong blueprint (GoogleCameraEng module)
-├── Android.mk                                 # Make-based package registration
 ├── README.md                                  # Comprehensive documentation
 ├── LICENSE                                    # Apache 2.0 license
 ├── module.prop                                # Magisk / KernelSU module metadata
