@@ -1,179 +1,139 @@
-# GCam_sweet2 — Google Camera System Module & AOSP Integration
+# GCam for Redmi Note 12 Pro 4G (sweet2)
 
-> **Google Camera (BSG MGC 9.6.080) tuned for Redmi Note 12 Pro 4G (`sweet2` / Qualcomm SM6150 / Snapdragon 732G)**  
-> Maintained by [Md Rony Hossen (rony1duet)](https://github.com/rony1duet)
+Google Camera (BSG MGC 9.6.080) tuned for Redmi Note 12 Pro 4G (`sweet2` / Qualcomm SM6150 / Snapdragon 732G).
+Maintained by [rony1duet](https://github.com/rony1duet).
 
----
+## Specifications
 
-## 📋 Device & Technical Specifications
-
-| Property | Value |
+| Property | Details |
 |:---|:---|
-| **Device Model** | Redmi Note 12 Pro 4G |
-| **Codename** | `sweet2` |
-| **SoC / Chipset** | Qualcomm SM6150 (Snapdragon 732G, 8nm) |
+| **Device** | Redmi Note 12 Pro 4G (`sweet2`) |
+| **Chipset** | Qualcomm SM6150 (Snapdragon 732G) |
 | **Architecture** | 64-bit ARM (`arm64-v8a`) |
-| **Main Camera Sensor** | 108 MP (Samsung ISOCELL HM2, $1/1.52"$, f/1.9) |
-| **Auxiliary Sensors** | 8 MP (Sony IMX355 / S5K4H7 Ultra-Wide) + 2 MP (Macro) + 2 MP (Depth) |
+| **Main Sensor** | 108 MP (Samsung ISOCELL HM2, f/1.9) |
+| **Aux Sensors** | 8 MP Ultra-Wide (Sony IMX355) + 2 MP Macro + 2 MP Depth |
 | **Front Camera** | 16 MP (OmniVision OV16A1Q) |
-| **GCam Engine** | BSG MGC 9.6.080_V52_ENG (`com.google.android.GoogleCameraEng`) |
-| **Video Configurations** | **1080p @ 30/60 fps**, **4K @ 30 fps** (8K & 4K@60fps disabled) |
-| **Target Platforms** | PixelOS, LineageOS, AOSP (Android 14, 15, 16, 17) |
+| **GCam Build** | BSG MGC 9.6.080_V52_ENG (`com.google.android.GoogleCameraEng`) |
+| **Video Modes** | 1080p @ 30/60 fps, 4K @ 30 fps (8K and 4K@60fps disabled) |
+| **Compatibility** | PixelOS, LineageOS, AOSP (Android 14, 15, 16, 17) |
 
----
+## Features
 
-## 🎯 Key Features & Optimizations
+- Integrates directly into AOSP/PixelOS build trees via `Android.bp` as a product-privileged app.
+- Configured with `dex_preopt: { enabled: false }` to avoid build-time `dex2oat` RAM exhaustion.
+- Can be compiled into ROM images or flashed systemlessly via Magisk / KernelSU / APatch.
+- Disables unsupported 8K and 4K@60fps video modes to prevent Snapdragon 732G ISP driver crashes.
+- Includes `GCam_Config_sweet2.xml` with tuned black levels, noise reduction, and custom AWB for the HM2 sensor.
+- Whitelists privileged permissions in `product/etc/permissions/privapp-permissions-GoogleCameraEng.xml`.
+- Replaces stock Aperture camera packages when installed.
 
-- 📸 **Native AOSP & PixelOS Integration**: Integrates directly into ROM compilation trees using Blueprint (`Android.bp`) as a product-privileged package.
-- ⚡ **Build-Ready & Dexpreopt Safe**: Configured with `dex_preopt: { enabled: false }` to prevent build-time `dex2oat` RAM exhaustion (OOM) on CI containers like Crave.
-- 📦 **Dual Deployment Mode**: Can be built directly into the system image or installed systemlessly as a Magisk / KernelSU / APatch module.
-- 🎬 **Hardware-Accurate Video Profiles**: Corrects the Snapdragon 732G Spectra 350 ISP limits. Prevents app crashes by disabling unsupported 8K and 4K@60fps modes while retaining full 4K@30fps and FHD@60fps capture.
-- 🎨 **Tuned Color & Noise Calibration**: Includes `GCam_Config_sweet2.xml` pre-tuned for Samsung HM2 sensor black levels, noise reduction, and custom Google AWB.
-- 🛡️ **Privileged Permissions Whitelisted**: Bundles `/product/etc/permissions/privapp-permissions-GoogleCameraEng.xml` for full access to camera hardware, audio, fine location, and external storage.
-- 🚫 **Stock Camera Replacement**: Cleanly suppresses default Aperture / ApertureLensLauncher camera packages.
+## Video Configuration (Spectra 350 Limits)
 
----
+The Snapdragon 732G Spectra 350 ISP supports up to 4K at 30 fps and 1080p at 60 fps. Generic GCam ports often expose 8K or 4K@60fps, which crashes the camera HAL on SM6150.
 
-## 📹 Video Profile Tuning (Spectra 350 ISP Limits)
-
-The Qualcomm Snapdragon 732G Spectra 350 ISP hardware supports up to **4K at 30 fps** and **1080p at 60 fps**. Generic GCam ports often expose 8K and 4K@60fps options which crash the camera stack on SM6150.
-
-**Pinned configuration in `common/GCam_Config_sweet2.xml`:**
+Pinned settings in `common/GCam_Config_sweet2.xml`:
 ```xml
-<!-- Disable unsupported 8K video -->
+<!-- Disable unsupported video modes -->
 <string name="pref_camera_video_8k_enabled">0</string>
 <string name="pref_camera_video_8k_option_available">0</string>
-
-<!-- Disable unsupported 4K @ 60fps -->
 <string name="pref_camera_video_4k60_enabled">0</string>
 <string name="pref_camera_video_4k60_option_available">0</string>
 
-<!-- Default to 1080p with 4K@30fps and 1080p@60fps selectable -->
+<!-- Defaults: 1080p with selectable 4K@30 and 1080p@60 -->
 <string name="pref_video_resolution">RES_1080P</string>
 <string name="pref_video_fps_4k_key">FPS_30</string>
 <string name="pref_camera_max_video_resolution">3840x2160</string>
 ```
 
----
-
-## 🏗️ Repository Architecture
+## Project Layout
 
 ```text
 GCam_sweet2/
-├── Android.bp                                 # Soong blueprint (GoogleCameraEng module)
-├── README.md                                  # Comprehensive documentation
-├── LICENSE                                    # Apache 2.0 license
-├── module.prop                                # Magisk / KernelSU module metadata
-├── customize.sh                               # Magisk / KernelSU installer script
-├── service.sh                                 # Post-boot permissions & appops enforcer
-├── privapp-permissions-GoogleCameraEng.xml    # System privileged permissions whitelist
+├── Android.bp                              # Blueprint for GoogleCameraEng module
+├── LICENSE                                 # Apache 2.0 license
+├── module.prop                             # Magisk/KernelSU metadata
+├── customize.sh                            # Module installer script
+├── service.sh                              # Runtime permission enforcer
+├── privapp-permissions-GoogleCameraEng.xml # System permissions whitelist
 ├── common/
-│   └── GCam_Config_sweet2.xml                 # Sweet2 hardware-tuned XML configuration
+│   └── GCam_Config_sweet2.xml              # sweet2 hardware config
 ├── aosp/
-│   ├── device_sweet2_gcam.mk                  # Makefile fragment for device tree include
+│   ├── device_sweet2_gcam.mk               # Makefile include for device tree
 │   └── local_manifests/
-│       └── gcam_sweet2.xml                    # Repo manifest entry for PixelOS / AOSP
-├── system/
-│   ├── product/
-│   │   └── app/
-│   │       ├── GoogleCameraEng/
-│   │       │   ├── GoogleCameraEng.apk        # (Fetched by fetch_gcam_prebuilt.sh)
-│   │       │   └── lib/arm64/*.so             # (Extracted native arm64 shared libs)
-│   │       ├── Aperture/
-│   │       │   └── .replace                   # Masks stock Aperture
-│   │       └── ApertureLensLauncher/
-│   │           └── .replace                   # Masks stock Aperture lens shortcut
-│   └── system_ext/
-│       └── app/
-│           └── Aperture/
-│               └── .replace                   # Masks Aperture in system_ext partition
-└── META-INF/
-    └── com/google/android/
-        ├── update-binary                      # Module flash script entry
-        └── updater-script                     # Dummy updater binary
+│       └── gcam_sweet2.xml                 # Local manifest snippet
+└── system/
+    └── product/app/
+        ├── GoogleCameraEng/                # Target app location
+        ├── Aperture/.replace               # Masks stock Aperture
+        └── ApertureLensLauncher/.replace   # Masks stock launcher shortcut
 ```
 
----
+## ROM Integration
 
-## 🔧 AOSP & PixelOS ROM Build Integration
-
-### 1. Local Manifest Configuration
-Add the repository to `.repo/local_manifests/sweet2.xml`:
+### 1. Local Manifest
+Add to `.repo/local_manifests/sweet2.xml`:
 
 ```xml
-<!-- Google Camera for sweet2 -->
 <project path="vendor/GCam_sweet2"
          name="rony1duet/GCam_sweet2"
          remote="rem" revision="PixelOS-17-base" clone-depth="1" />
-
-<!-- Shared Prebuilt Fetcher -->
 <project path="vendor/android_prebuilts_sweet2"
          name="rony1duet/android_prebuilts_sweet2"
          remote="rem" revision="PixelOS-17-base" clone-depth="1" />
 ```
 
-### 2. Device Tree Makefile Inheritance
-Include the GCam fragment inside `device/xiaomi/sweet2/device.mk`:
+### 2. Device Tree Makefile
+Include the package in `device/xiaomi/sweet2/device.mk`:
 
 ```makefile
-# Google Camera
 $(call inherit-product-if-exists, vendor/GCam_sweet2/aosp/device_sweet2_gcam.mk)
 ```
 
-Stock Aperture removal is handled cleanly via `custom_sweet2.mk`:
+Remove default Aperture in `custom_sweet2.mk`:
 ```makefile
 PRODUCT_PACKAGES_REMOVE += \
     Aperture \
     ApertureLensLauncher
 ```
 
-### 3. Build-Time Prebuilt Fetcher
-The ~342 MB proprietary APK and extracted native libraries are gitignored to keep repository sizes small. Fetch the verified prebuilt prior to initiating the build:
+### 3. Fetch Prebuilt APK
+The ~342MB APK and native libraries are gitignored. Download before compiling:
 
 ```bash
 bash vendor/android_prebuilts_sweet2/gcam/fetch_gcam_prebuilt.sh \
     vendor/GCam_sweet2/system/product/app/GoogleCameraEng
 ```
 
-### 4. Compile the ROM
+### 4. Build
 ```bash
 source build/envsetup.sh
 breakfast sweet2
 m pixelos
 ```
 
----
+## Magisk / KernelSU Module Install
 
-## 📦 Magisk / KernelSU / APatch Module Installation
+For devices running an existing custom ROM:
 
-For devices already running a custom ROM without built-in GCam:
+1. Download the module zip from [Releases](https://github.com/rony1duet/GCam_sweet2/releases).
+2. Open **KernelSU**, **Magisk**, or **APatch**.
+3. Select **Install from storage** and choose the zip.
+4. Reboot the device.
+5. In Google Camera, double-tap the area around the shutter button to load `GCam_Config_sweet2.xml`.
 
-1. Download the latest module ZIP from the [Releases](https://github.com/rony1duet/GCam_sweet2/releases) tab.
-2. Open **KernelSU**, **Magisk**, or **APatch** application.
-3. Navigate to the **Modules** section and select **Install from storage**.
-4. Select the downloaded `.zip` file.
-5. `customize.sh` will automatically:
-   - Suppress stock Aperture camera packages.
-   - Set optimal `0644` file and `0755` executable permissions for all 21 bundled arm64 libraries.
-   - Copy `GCam_Config_sweet2.xml` into `/sdcard/GCam/Configs9/` and `/sdcard/Download/`.
-6. Reboot your device.
-7. Open **Google Camera** and double-tap the black bar around the shutter button to import `GCam_Config_sweet2.xml`.
+## Manual ADB Testing
 
----
-
-## 🔌 ADB Manual Testing & Config Deployment
-
-To manually push and test configurations on a connected rooted device:
+To push configs directly to a connected rooted device:
 
 ```bash
-# Push the tuned configuration XML
+# Push config file
 adb push common/GCam_Config_sweet2.xml /sdcard/GCam/Configs9/
 adb push common/GCam_Config_sweet2.xml /sdcard/Download/
 
-# Stop running GCam instance to apply changes
+# Restart camera app
 adb shell am force-stop com.google.android.GoogleCameraEng
 
-# Ensure runtime permissions are granted
+# Grant runtime permissions
 adb shell pm grant com.google.android.GoogleCameraEng android.permission.CAMERA
 adb shell pm grant com.google.android.GoogleCameraEng android.permission.RECORD_AUDIO
 adb shell pm grant com.google.android.GoogleCameraEng android.permission.ACCESS_FINE_LOCATION
@@ -181,20 +141,16 @@ adb shell pm grant com.google.android.GoogleCameraEng android.permission.READ_ME
 adb shell pm grant com.google.android.GoogleCameraEng android.permission.READ_MEDIA_VIDEO
 ```
 
----
+## Tested Features
 
-## 🧪 Validated Features on sweet2 Hardware
+- [x] Portrait mode with depth mapping and face retouching
+- [x] 1080p video recording at 30 and 60 fps
+- [x] 4K video recording at 30 fps with EIS
+- [x] 108MP sensor with pixel binning and HDR+
+- [x] Night Sight and Astrophotography
+- [x] Lens switching between Primary, Ultra-Wide, and Macro
 
-- [x] **Portrait Mode**: Bokeh depth calculation and edge detection working with face beauty options.
-- [x] **Video Recording (1080p @ 30/60 fps)**: High-speed smooth playback verified without frame dropping.
-- [x] **Video Recording (4K @ 30 fps)**: Ultra-HD recording operational with hardware video stabilization (EIS).
-- [x] **108 MP Sensor Full Resolution**: Supported via sensor binning and enhanced HDR+ processing.
-- [x] **Night Sight & Astrophotography**: Extended exposure and de-noise tuning operational.
-- [x] **Macro & Ultra-Wide Aux Switching**: Smooth switching between all available physical lenses.
+## License
 
----
-
-## 📄 License
-
-Licensed under the [Apache License, Version 2.0](LICENSE).
-GCam binary application is proprietary to Google LLC and modded by BSG / MGC.
+Licensed under [Apache 2.0](LICENSE).
+GCam binaries are property of Google LLC and modded by BSG / MGC.
