@@ -76,10 +76,10 @@ Add to `.repo/local_manifests/sweet2.xml`:
 ```xml
 <project path="vendor/GCam_sweet2"
          name="rony1duet/GCam_sweet2"
-         remote="rem" revision="PixelOS-17-base" clone-depth="1" />
+         remote="rem" revision="PixelOS-16-QPR2" clone-depth="1" />
 <project path="vendor/android_prebuilts_sweet2"
          name="rony1duet/android_prebuilts_sweet2"
-         remote="rem" revision="PixelOS-17-base" clone-depth="1" />
+         remote="rem" revision="PixelOS-16-QPR2" clone-depth="1" />
 ```
 
 ### 2. Device Tree Makefile
