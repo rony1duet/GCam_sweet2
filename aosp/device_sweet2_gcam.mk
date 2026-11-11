@@ -13,6 +13,7 @@ PRODUCT_PACKAGES += \
     GoogleCameraEng
 
 # Suppress stock Aperture camera (replaced by GCam)
-# Uncomment if Aperture is defined in your device tree:
-# PRODUCT_PACKAGES_ENG += GoogleCameraEng
-# REMOVE_PACKAGES += Aperture ApertureLensLauncher
+# If Aperture is included in the base ROM / device tree, remove it:
+# PRODUCT_PACKAGES_REMOVE += \
+#     Aperture \
+#     ApertureLensLauncher

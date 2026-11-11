@@ -70,44 +70,64 @@ GCam_sweet2/
 
 ## ROM Integration
 
-### 1. Local Manifest
-Add to `.repo/local_manifests/sweet2.xml`:
+### 1. Local Manifest Setup
+Copy [`aosp/local_manifests/gcam_sweet2.xml`](aosp/local_manifests/gcam_sweet2.xml) into your ROM's `.repo/local_manifests/` directory, or add the following to `.repo/local_manifests/sweet2.xml`:
 
 ```xml
-<project path="vendor/GCam_sweet2"
-         name="rony1duet/GCam_sweet2"
-         remote="rem" revision="PixelOS-16-QPR2" clone-depth="1" />
-<project path="vendor/android_prebuilts_sweet2"
-         name="rony1duet/android_prebuilts_sweet2"
-         remote="rem" revision="PixelOS-16-QPR2" clone-depth="1" />
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="rony1duet"
+          fetch="https://github.com/rony1duet/"
+          revision="PixelOS-16-QPR2" />
+
+  <project path="vendor/GCam_sweet2"
+           name="GCam_sweet2"
+           remote="rony1duet"
+           revision="PixelOS-16-QPR2" />
+
+  <project path="vendor/android_prebuilts_sweet2"
+           name="android_prebuilts_sweet2"
+           remote="rony1duet"
+           revision="PixelOS-16-QPR2" />
+</manifest>
 ```
 
-### 2. Device Tree Makefile
-Include the package in `device/xiaomi/sweet2/device.mk`:
+Sync both repositories:
+```bash
+repo sync vendor/GCam_sweet2 vendor/android_prebuilts_sweet2
+```
+
+### 2. Device Tree Inclusion
+Inherit the GCam makefile in your device makefile (e.g. `device/xiaomi/sweet2/device.mk` or `sm6150.mk`):
 
 ```makefile
 $(call inherit-product-if-exists, vendor/GCam_sweet2/aosp/device_sweet2_gcam.mk)
 ```
 
-Remove default Aperture in `custom_sweet2.mk`:
+To suppress the default LineageOS / AOSP Aperture camera:
 ```makefile
 PRODUCT_PACKAGES_REMOVE += \
     Aperture \
     ApertureLensLauncher
 ```
 
-### 3. Fetch Prebuilt APK
-The ~342MB APK and native libraries are gitignored. Download before compiling:
+### 3. Fetch Prebuilt APK & Native Libraries
+The ~342MB APK and 64-bit native libraries (`lib/arm64/*.so`) are not tracked directly in Git to prevent repository bloat. Run the automated fetch script before starting the compilation:
 
 ```bash
 bash vendor/android_prebuilts_sweet2/gcam/fetch_gcam_prebuilt.sh \
     vendor/GCam_sweet2/system/product/app/GoogleCameraEng
 ```
 
-### 4. Build
+### 4. Soong Blueprint Design Notes (`Android.bp`)
+- `preprocessed: true` & `skip_preprocessed_apk_checks: true`: Required because BSG MGC is a presigned release APK containing compressed dex entries. Modern Soong enforces strict uncompressed dex checks that fail without this bypass.
+- `dex_preopt: { enabled: false }`: Prevents build-time `dex2oat` compilation timeouts and OOM errors during ROM builds, allowing the Android runtime to optimize upon initial boot.
+- `product_specific: true` & `privileged: true`: Places the package into `/product/priv-app/GoogleCameraEng/`, pairing with `privapp-permissions-GoogleCameraEng.xml` for full hardware camera access.
+
+### 5. Build ROM
 ```bash
 source build/envsetup.sh
-breakfast sweet2
+lunch pixelos_sweet2-userdebug
 m pixelos
 ```
 
