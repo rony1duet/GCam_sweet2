@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   .repo/local_manifests/gcam_sweet2.xml
-  PixelOS local manifest — clones GCam_sweet2 into vendor/GCam_sweet2
+  PixelOS local manifest - clones GCam_sweet2 into vendor/GCam_sweet2
 
   Usage:
     1. Copy this file to <ROM_source>/.repo/local_manifests/gcam_sweet2.xml
